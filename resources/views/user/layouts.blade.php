@@ -19,8 +19,7 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer" />
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         a {
@@ -35,12 +34,11 @@
         .active {
             border-bottom: 2px solid #EE88B6 !important;
         }
-       
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('home') }}">
                 <img class="img-fluid" style="width: 200px" src="{{ asset('assets/images/logo.png') }}" alt="logo">
@@ -52,21 +50,31 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a id="navHome" onclick="toggleNav('Home')" class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <div class="mx-3"></div>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
+                        <a id="navAbout" onclick="toggleNav('About')" class="nav-link" href="#about">About</a>
                     </li>
                     <div class="mx-3"></div>
                     <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
+                        <a id="navServices" onclick="toggleNav('Services')" class="nav-link" href="#services">Services</a>
                     </li>
                     <div class="mx-3"></div>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
+                        <a id="navContact" onclick="toggleNav('Contact')" class="nav-link" href="#contact">Contact</a>
                     </li>
                 </ul>
+
+                @if($user != null)
+                <span class="navbar-text">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                        </li>
+                    </ul>
+                </span>
+                @else
                 <span class="navbar-text">
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         <li class="nav-item">
@@ -78,6 +86,7 @@
                         </li>
                     </ul>
                 </span>
+                @endif
             </div>
         </div>
     </nav>
@@ -121,6 +130,36 @@
     </footer>
 
 </body>
+
+
+<script>
+    const home = document.getElementById('navHome');
+    const about = document.getElementById('navAbout');
+    const services = document.getElementById('navServices');
+    const contact = document.getElementById('navContact');
+
+    function toggleNav(id) {
+        home.classList.remove('active');
+        about.classList.remove('active');
+        services.classList.remove('active');
+        contact.classList.remove('active');
+
+        switch (id) {
+            case 'Home':
+                home.classList.add('active');
+                break;
+            case 'About':
+                about.classList.add('active');
+                break;
+            case 'Services':
+                services.classList.add('active');
+                break;
+            case 'Contact':
+                contact.classList.add('active');
+                break;
+        }
+    };
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
