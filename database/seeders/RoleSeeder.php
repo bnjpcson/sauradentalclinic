@@ -110,7 +110,7 @@ class RoleSeeder extends Seeder
             $question = $value->question;
 
             $med = [
-                'user_id' => $User->id,
+                'user_id' => $adminUser->id,
                 'question_id' => $question_id,
             ];
 
@@ -122,11 +122,13 @@ class RoleSeeder extends Seeder
             $question = $value->question;
 
             $med = [
-                'user_id' => $adminUser->id,
+                'user_id' => $User->id,
                 'question_id' => $question_id,
             ];
 
             Medhistory::create($med);
         }
+
+
     }
 }

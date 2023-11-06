@@ -7,7 +7,7 @@
                     <div class="col-6">
                         <h1 class="m-0">Services</h1>
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
                             <li class="breadcrumb-item active">Services</li>
                         </ol>
                     </div>

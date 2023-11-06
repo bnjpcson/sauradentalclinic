@@ -106,7 +106,6 @@
                             </a>
                         </li>
 
-
                         <li @if ($page_title == 'appointment') class="nav-item menu-open" @else class="nav-item" @endif>
                             <a href="#"
                                 @if ($page_title == 'appointment') class="nav-link active" @else class="nav-link" @endif>
@@ -118,37 +117,38 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="#"
-                                        @if ($page_open == 'home') class="nav-link active" @else class="nav-link" @endif>
+                                    <a href="{{ route('appointment.pending') }}"
+                                        @if ($page_open == 'pending') class="nav-link active" @else class="nav-link" @endif>
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Approve</p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#"
-                                        @if ($page_open == 'owners') class="nav-link active" @else class="nav-link" @endif>
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Pending</p>
+                                        <p>Pending Approval</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#"
-                                        @if ($page_open == 'owners') class="nav-link active" @else class="nav-link" @endif>
+                                    <a href="{{ route('appointment.approved') }}"
+                                        @if ($page_open == 'approved') class="nav-link active" @else class="nav-link" @endif>
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Scheduled</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('appointment.canceled') }}"
+                                        @if ($page_open == 'canceled') class="nav-link active" @else class="nav-link" @endif>
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Canceled</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#"
-                                        @if ($page_open == 'owners') class="nav-link active" @else class="nav-link" @endif>
+                                    <a href="{{ route('appointment.completed') }}"
+                                        @if ($page_open == 'completed') class="nav-link active" @else class="nav-link" @endif>
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Declined</p>
+                                        <p>Completed</p>
                                     </a>
                                 </li>
 
                             </ul>
                         </li>
+
+                        @role('Admin')
                         <li class="nav-item">
                             <a href="{{ route('admin.services') }}"
                                 @if ($page_open == 'services') class="nav-link active" @else class="nav-link" @endif>
@@ -158,6 +158,9 @@
                                 </p>
                             </a>
                         </li>
+                        @endrole
+
+                        @role('Admin')
                         <li class="nav-item">
                             <a href="{{ route('admin.users') }}"
                                 @if ($page_open == 'users') class="nav-link active" @else class="nav-link" @endif>
@@ -167,6 +170,7 @@
                                 </p>
                             </a>
                         </li>
+                        @endrole
                         <li class="nav-item">
                             <a href="{{ route('admin.profile') }}"
                                 @if ($page_open == 'profile') class="nav-link active" @else class="nav-link" @endif>
@@ -190,7 +194,8 @@
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
-            <span>Copyright &copy; {{ date('Y') }} <strong><a href="{{ route('home') }}">Saura Dental Clinic</a></strong>.</span>
+            <span>Copyright &copy; {{ date('Y') }} <strong><a href="{{ route('home') }}">Saura Dental
+                        Clinic</a></strong>.</span>
             All rights reserved.
         </footer>
 
@@ -239,9 +244,11 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
 
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.all.min.js"></script>
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.min.css'>
+
+
 </body>
 
 <script>

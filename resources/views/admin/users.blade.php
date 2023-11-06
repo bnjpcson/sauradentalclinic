@@ -7,7 +7,7 @@
                     <div class="col-6">
                         <h1 class="m-0">Users</h1>
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
                             <li class="breadcrumb-item active">Users</li>
                         </ol>
                     </div>
@@ -209,6 +209,8 @@
                             } else {
                                 role = role[0].name;
                             }
+
+                            console.log(record.roles);
 
                             if (record.id == 1) {
                                 tr = $(

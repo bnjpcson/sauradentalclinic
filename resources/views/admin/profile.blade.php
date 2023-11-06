@@ -7,7 +7,7 @@
                     <div class="col-6">
                         <h1 class="m-0">Profile</h1>
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
                             <li class="breadcrumb-item active">Profile</li>
                         </ol>
                     </div>
@@ -127,20 +127,23 @@
                         <div class="container p-2">
                             <div class="row">
                                 <div class="col">
-                                    <table id="medhistory_table" class="table">
-                                        <thead>
-                                            <th style="width: 50%"></th>
-                                            <th style="width: 10%">Yes</th>
-                                            <th style="width: 30%">Notes/Description</th>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                                    <form id="medhistoryForm" action="{{ route('profile.savemedhistory') }}"
+                                        method="POST">
+                                        <table id="medhistory_table" class="table">
+                                            <thead>
+                                                <th style="width: 50%"></th>
+                                                <th style="width: 10%">Yes</th>
+                                                <th style="width: 30%">Notes/Description</th>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </form>
                                 </div>
                             </div>
                             <div class="row my-2">
                                 <div class="col text-end">
-                                    <button class="btn btn-primary">Save</button>
+                                    <button id="btnSave" class="btn btn-primary">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -182,6 +185,8 @@
         function fetchMedHistory() {
             const url = "{{ route('profile.getmedhistory') }}";
 
+            $('#medhistory_table tbody').empty();
+
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
@@ -192,20 +197,21 @@
                     if (data.data.length !== 0 || typeof data.data !== "undefined" || typeof data
                         .data !== null) {
                         $.map(data.data, function(record) {
-                            console.log(record);
                             let notes = "";
                             let tr = "";
                             if (record.notes != null) {
                                 notes = record.notes;
                             }
-                            
+
                             if (record.yes == 1) {
                                 tr = $(
                                     "<tr>" +
                                     "<td> " + record.question + " </td>" +
-                                    "<td><input checked type='checkbox' name='yes[]'></td>" +
+                                    "<td><input checked type='checkbox' name='yes[" + record.id +
+                                    "]'></td>" +
                                     "<td>" +
-                                    "<textarea name='notes[]' id='' cols='30' rows='3' class='form-control'>" +
+                                    "<textarea name='notes[" + record.id +
+                                    "]' id='' cols='30' rows='3' class='form-control'>" +
                                     notes +
                                     "</textarea>" +
                                     "</td>" +
@@ -215,9 +221,11 @@
                                 tr = $(
                                     "<tr>" +
                                     "<td> " + record.question + " </td>" +
-                                    "<td><input type='checkbox' name='yes[]'></td>" +
+                                    "<td><input type='checkbox' name='yes[" + record.id +
+                                    "]'></td>" +
                                     "<td>" +
-                                    "<textarea name='notes[]' id='' cols='30' rows='3' class='form-control'>" +
+                                    "<textarea name='notes[" + record.id +
+                                    "]' id='' cols='30' rows='3' class='form-control'>" +
                                     notes +
                                     "</textarea>" +
                                     "</td>" +
@@ -225,6 +233,7 @@
                                 );
                             }
 
+                            console.log(record);
 
                             $('#medhistory_table tbody').append(tr[0]);
                         });
@@ -328,7 +337,7 @@
                     cache: false,
                     success: function(res) {
                         $('#btnUpdate').prop('disabled', false);
-                        $('#btnUpdate').html("Add");
+                        $('#btnUpdate').html("Save");
                         if (res.status === 400) {
                             if (res.error.name != null) {
                                 $('#name_error').html(res.error.name);
@@ -361,9 +370,55 @@
                             icon: 'error',
                         });
                         $('#btnUpdate').prop('disabled', false);
-                        $('#btnUpdate').html("Add");
+                        $('#btnUpdate').html("Save");
                     }
                 });
+            });
+
+            $(document).on('click', '#btnSave', function(ev) {
+                ev.preventDefault();
+                $('#btnSave').prop('disabled', true);
+                $('#btnSave').html("<i class='fa fa-spinner fa-spin'></i> Loading");
+
+                let medhistoryForm = $("#medhistoryForm")[0];
+                let medhistoryFormData = new FormData(medhistoryForm);
+                const url = "{{ route('profile.savemedhistory') }}";
+
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    data: medhistoryFormData,
+                    enctype: "multipart/form-data",
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function(res) {
+                        $('#btnSave').prop('disabled', false);
+                        $('#btnSave').html("Save");
+
+                        if (res.status === 200) {
+                            fetchMedHistory();
+
+                            new swal({
+                                title: 'Success',
+                                text: 'Updated Successfully',
+                                icon: 'success',
+                            });
+                        }
+
+                        console.log(res);
+                    },
+                    error: function(res) {
+                        new swal({
+                            title: 'Error',
+                            text: 'Failed to update the record. Please try again.',
+                            icon: 'error',
+                        });
+                        $('#btnSave').prop('disabled', false);
+                        $('#btnSave').html("Save");
+                    }
+                });
+
             });
 
         });

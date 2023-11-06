@@ -37,18 +37,18 @@ class ProfileController extends Controller
                 return response()->json(['status' => 400, 'error' => $validate->getMessageBag()]);
             } else {
                 $errors = [];
-                if(!Hash::check($request->oldpassword, $user->password)){
+                if (!Hash::check($request->oldpassword, $user->password)) {
                     $errors['oldpassword'] = ['Incorrect Old Password'];
                 }
-                if($request->newpassword != $request->confirmpassword){
+                if ($request->newpassword != $request->confirmpassword) {
                     $errors['newpassword'] = ['Two passwords do not match.'];
                 }
-                if(!empty($errors)){
+                if (!empty($errors)) {
                     return response()->json(['status' => 400, 'error' => $errors, 'check' => Hash::check($request->oldpassword, $user->password)]);
                 }
                 try {
 
-                    $user = User::where('id', $user->id)->update(['password'=> Hash::make($request->newpassword)]);
+                    $user = User::where('id', $user->id)->update(['password' => Hash::make($request->newpassword)]);
 
                     if ($user) {
                         return response()->json(['status' => 200, 'msg' => 'Updated Succesfully', 'data' => $request->all()]);
@@ -70,10 +70,10 @@ class ProfileController extends Controller
             $validate = Validator::make($request->all(), [
                 "id" => "required",
                 "name" => "required",
-                "email" => "required|unique:users,email," . $request->id."|bail",
+                "email" => "required|unique:users,email," . $request->id . "|bail",
                 "bdate" => "required|date|bail",
                 "phonenum" => "required|numeric|digits:11|bail",
-            ],[
+            ], [
                 'id.required' => 'ID is required',
                 'name.required' => 'Name is required',
                 'email.required' => 'Email is required',
@@ -92,7 +92,7 @@ class ProfileController extends Controller
                     $id = $request->id;
 
                     $user = User::where('id', $id)->get()[0];
-                    $user->syncRoles($request->role);
+                    
                     $user->name = $request->name;
                     $user->email = $request->email;
                     $user->phonenum = $request->phonenum;
@@ -113,22 +113,67 @@ class ProfileController extends Controller
         }
     }
 
-    public function getuser(Request $request){
-        try{
+    public function getuser(Request $request)
+    {
+        try {
             $data = Auth::user();
             return response()->json(['status' => 200, 'data' => $data], 200);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             abort(500, 'Something Went Wrong');
         }
     }
 
-    
-    public function getmedhistory(Request $request){
-        try{
-            $data = Medhistory::join('questions', 'medhistory.question_id', '=', 'questions.id')->where('user_id', Auth::user()->id)->get();
+
+    public function getmedhistory(Request $request)
+    {
+        try {
+            $data = Medhistory::select('medhistory.id as id', 'notes', 'question', 'yes')->join('questions', 'medhistory.question_id', '=', 'questions.id')->where('user_id', Auth::user()->id)->get();
             return response()->json(['status' => 200, 'data' => $data], 200);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             abort(500, 'Something Went Wrong');
+        }
+    }
+
+
+    public function savemedhistory(Request $request)
+    {
+
+        try {
+
+            $user = User::where('id', Auth::user()->id)->get()[0];
+            foreach ($request->notes as $key => $value) {
+                Medhistory::where('id', $key)->update(['notes' => $value]);
+            }
+
+            $yes_id = [];
+            if ($request->yes) {
+                foreach ($request->yes as $key => $value) {
+                    $yes_id[] = $key;
+                }
+
+                $medhistory = Medhistory::where('user_id', $user->id)->get();
+
+                foreach ($medhistory as $key => $value) {
+                    $isFound = false;
+                    foreach ($yes_id as $key => $yes) {
+                        if($yes == $value->id){
+                            $isFound = true;
+                        }
+                    }
+                    if ($isFound) {
+                        Medhistory::where('id', $value->id)->update(['yes' => 1]);
+                    } else {
+                        Medhistory::where('id', $value->id)->update(['yes' => 0]);
+                    }
+                }
+            } else {
+                Medhistory::where('user_id', $user->id)->update(['yes' => 0]);
+            }
+
+            return response()->json(['status' => 200, 'msg' => 'Updated Succesfully', 'data' => $request->all()]);
+
+        } catch (\Exception $e) {
+            abort(500, 'Something Went Wrong' . $e);
         }
     }
 }

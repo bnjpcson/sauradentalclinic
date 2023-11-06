@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServicesController;
@@ -56,6 +57,27 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/getuser', [ProfileController::class, 'getuser'])->name('profile.getuser');
         Route::get('/getmedhistory', [ProfileController::class, 'getmedhistory'])->name('profile.getmedhistory');
+        Route::post('/savemedhistory', [ProfileController::class, 'savemedhistory'])->name('profile.savemedhistory');
+    });
+
+    Route::prefix('appointment')->group(function () {
+        Route::get('/pending', [AppointmentController::class, 'pending'])->name('appointment.pending');
+        Route::get('/approved', [AppointmentController::class, 'approved'])->name('appointment.approved');
+        Route::get('/canceled', [AppointmentController::class, 'canceled'])->name('appointment.canceled');
+        Route::get('/completed', [AppointmentController::class, 'completed'])->name('appointment.completed');
+
+
+
+        Route::get('/getallpending', [AppointmentController::class, 'getallpending'])->name('appointment.getallpending');
+        Route::get('/getallapproved', [AppointmentController::class, 'getallapproved'])->name('appointment.getallapproved');
+        Route::get('/getallcanceled', [AppointmentController::class, 'getallcanceled'])->name('appointment.getallcanceled');
+        Route::get('/getallcompleted', [AppointmentController::class, 'getallcompleted'])->name('appointment.getallcompleted');
+
+        Route::post('/store', [AppointmentController::class, 'store'])->name('appointment.store');
+        Route::get('/select/{id}', [AppointmentController::class, 'select'])->name('appointment.select');
+        Route::post('/approve/{id}', [AppointmentController::class, 'approve'])->name('appointment.approve');
+        Route::post('/cancel/{id}', [AppointmentController::class, 'cancel'])->name('appointment.cancel');
+        Route::post('/complete/{id}', [AppointmentController::class, 'complete'])->name('appointment.complete');
     });
 
 });
