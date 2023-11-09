@@ -4,7 +4,7 @@
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-6">
+                    <div class="col-lg-6">
                         <h1 class="m-0">Compeleted Appointments</h1>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
@@ -19,45 +19,51 @@
         </div>
 
         @role('User')
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="card p-3 shadow" style="overflow-x:auto;">
-                        <table id='userPendingTable' class='display responsive table w-100' cellspacing="0">
-                            <thead>
-                                <th width="30%">Appointment ID</th>
-                                <th width="50%">Date</th>
-                                <th width="20%">Status</th>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="card p-3 shadow" style="overflow-x:auto;">
+                            <table id='userPendingTable' class='display responsive table w-100' cellspacing="0">
+                                <thead>
+                                    <th width="10%">Appointment ID</th>
+                                    <th width="20%">Date</th>
+                                    <th width="20%">Availed Service</th>
+                                    <th width="20%">Price</th>
+                                    <th width="20%">Prescriptions</th>
+                                    <th width="10%">Status</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endrole
 
         @role('Admin')
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="card p-3 shadow" style="overflow-x:auto;">
-                        <table id='adminPendingTable' class='display responsive table w-100' cellspacing="0">
-                            <thead>
-                                <th width="20%">Appointment ID</th>
-                                <th width="25%">Date</th>
-                                <th width="25%">Name</th>
-                                <th width="30%">Status</th>
-                                {{-- <th width="10%">Action</th> --}}
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="card p-3 shadow" style="overflow-x:auto;">
+                            <table id='adminPendingTable' class='display responsive table w-100' cellspacing="0">
+                                <thead>
+                                    <th width="10%">Appointment ID</th>
+                                    <th width="20%">Date</th>
+                                    <th width="15%">Name</th>
+                                    <th width="15%">Availed Service</th>
+                                    <th width="15%">Price</th>
+                                    <th width="15%">Prescriptions</th>
+                                    <th width="10%">Status</th>
+                                    {{-- <th width="10%">Action</th> --}}
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endrole
 
     </main>
@@ -194,6 +200,7 @@
                 data: "",
                 dataType: "JSON",
                 success: function(data) {
+                    console.log(data);
                     if (data.data.length === 0 || typeof data.data === "undefined" || typeof data
                         .data === null) {
                         userPendingTable.draw();
@@ -228,11 +235,17 @@
                             date = date.toLocaleDateString("en-US", options);
 
                             let id = pad(record.id);
+                            let service = record.service.service_name;
+                            let price = record.service.price;
+                            let prescription = record.description;
 
                             const tr = $(
                                 "<tr>" +
                                 "<td>" + id + "</td>" +
                                 "<td>" + date + "</td>" +
+                                "<td>" + service + "</td>" +
+                                "<td> ₱" + parseInt(price).toFixed(2) + "</td>" +
+                                "<td>" + prescription + "</td>" +
                                 "<td>" + status + "</td>" +
                                 "</tr>"
                             );
@@ -265,6 +278,8 @@
 
                         $.map(data.data, function(record) {
 
+                            console.log(record);
+
                             let status =
                                 "<span class='px-3 py-1 bg-warning rounded-pill'>Pending</span>";
                             switch (record.status) {
@@ -292,12 +307,18 @@
                             date = date.toLocaleDateString("en-US", options);
 
                             let id = pad(record.id);
+                            let service = record.service.service_name;
+                            let price = record.service.price;
+                            let prescription = record.description;
 
                             const tr = $(
                                 "<tr>" +
                                 "<td>" + id + "</td>" +
                                 "<td>" + date + "</td>" +
                                 "<td>" + record.user.name + "</td>" +
+                                "<td> ₱" + parseInt(price).toFixed(2) + "</td>" +
+                                "<td>" + price + "</td>" +
+                                "<td>" + prescription + "</td>" +
                                 "<td>" + status + "</td>" +
                                 "</tr>"
                             );

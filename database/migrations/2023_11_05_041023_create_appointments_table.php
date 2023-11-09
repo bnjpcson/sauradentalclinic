@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('service_id')->nullable();
-            $table->boolean('status')->nullable()->default(0);
+            $table->timestamp('date')->nullable();
+            $table->boolean('status')->nullable()->default(0)->comment('0-pending; 1-Scheduled/Approved; 2-Canceled; 3-Completed;');;
             $table->string('description')->nullable();
+            $table->string('reason')->nullable();
             $table->timestamps();
         });
     }

@@ -1,10 +1,14 @@
 @extends('user.layouts')
 @section('content')
     <style>
-        #first {
+
+        .background-image {
             background-image: url('{{ asset('assets/images/opac.png') }}'), url('{{ asset('assets/images/bg-workplace.png') }}');
-            object-fit: cover;
             background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover;
+            width: 100%;
         }
 
         .title {
@@ -21,12 +25,14 @@
             width: 111px;
             margin: auto;
         }
-        .container{
-            scroll-margin-top: 120px; 
+
+        .container {
+            scroll-margin-top: 120px;
         }
-        
     </style>
-    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center" id="first">
+
+    
+    <div class="background-image container-fluid vh-100 d-flex align-items-center justify-content-center" id="first">
         <div class="row text-center" style="margin-top: -150px">
             <div class="col-12 mx-auto">
                 <span style="font-family: 'Poppins'; font-size: 40px; ">Need a Dentist?</span>
@@ -45,7 +51,7 @@
             </div>
         </div>
     </div>
-    <div id="about" class="container mb-5">
+    <div id="about" class="container mb-5 mt-5">
         <div class="row">
             <div class="col-12">
                 <h1 class="title">Experience Elevated</h1>

@@ -13,6 +13,7 @@ class Appointment extends Model
         'user_id',
         'service_id',
         'status',
+        'date',
         'description',
     ];
 

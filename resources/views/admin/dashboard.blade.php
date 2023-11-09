@@ -13,7 +13,7 @@
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-6">
+                    <div class="col-lg-6">
                         <h1 class="m-0">Dashboard</h1>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>

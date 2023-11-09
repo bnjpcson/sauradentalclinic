@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Medhistory;
+use App\Models\Services;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -98,9 +100,9 @@ class AppointmentController extends Controller
     {
 
         $user = User::where('id', Auth::user()->id)->get()[0];
-        $completed = Appointment::with('user')->where('status', 3)->where('user_id', $user->id)->get();
+        $completed = Appointment::with('user', 'service')->where('status', 3)->where('user_id', $user->id)->get();
         if ($user->hasRole('Admin')) {
-            $completed = Appointment::with('user')->where('status', 3)->get();
+            $completed = Appointment::with('user', 'service')->where('status', 3)->get();
         }
 
         $response['data'] = $completed;
@@ -119,14 +121,20 @@ class AppointmentController extends Controller
                 return response()->json(['status' => 400, 'error' => $validate->getMessageBag()]);
             } else {
 
-                $appointments = Appointment::whereDate('created_at', $request->date)->get();
-                if (count($appointments) > 10) {
-                    return response()->json(['status' => 405, 'asd' => $appointments]);
+                $appointments = Appointment::whereDate('date', $request->date)->where('status', 0)->get();
+                $user_appointment = Appointment::whereDate('date', $request->date)->where('user_id', Auth::user()->id)->where('status', 0)->get();
+
+                if (count($appointments) >= 10) {
+                    return response()->json(['status' => 405, 'errors' => 'MAX']);
+                }
+                if (count($user_appointment) >= 1) {
+                    return response()->json(['status' => 405, 'errors' => 'EXIST']);
                 }
                 try {
 
                     $appointment = Appointment::create([
                         'user_id' => Auth::user()->id,
+                        'date' => $request->date,
                         'status' => 0,
                     ]);
 
@@ -147,11 +155,17 @@ class AppointmentController extends Controller
     public function select(Request $request)
     {
         $id = $request->id;
-        $appointment = Appointment::where('id', $id)->get();
+        $appointment = Appointment::with('user')->where('id', $id)->get();
+        $medhistory = Medhistory::with('questions')->where('user_id', $appointment[0]->user_id)->get();
+        $services = Services::all();
+
 
         if (count($appointment)) {
             $data['id'] = $id;
             $data['data'] = $appointment;
+            $data['medhistory'] = $medhistory;
+            $data['services'] = $services;
+
             return response()->json($data, 200);
         } else {
             return response()->json(['msg' => 'Bad request. ID is not found.'], 400);
@@ -176,7 +190,7 @@ class AppointmentController extends Controller
     {
         try {
 
-            $appointment = Appointment::where('id', $request->id)->update(['status' => 2]);
+            $appointment = Appointment::where('id', $request->id)->update(['status' => 2, 'reason' => $request->reason]);
 
             if ($appointment) {
                 return response()->json(['status' => 200, 'msg' => 'Updated Succesfully', 'data' => $request->all()]);
@@ -192,7 +206,7 @@ class AppointmentController extends Controller
     {
         try {
 
-            $appointment = Appointment::where('id', $request->id)->update(['status' => 3]);
+            $appointment = Appointment::where('id', $request->id)->update(['status' => 3, 'description' => $request->prescription, 'service_id' => $request->services]);
 
             if ($appointment) {
                 return response()->json(['status' => 200, 'msg' => 'Updated Succesfully', 'data' => $request->all()]);

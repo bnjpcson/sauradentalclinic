@@ -4,7 +4,7 @@
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-6">
+                    <div class="col-lg-6">
                         <h1 class="m-0">Profile</h1>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
@@ -221,10 +221,10 @@
                                 tr = $(
                                     "<tr>" +
                                     "<td> " + record.question + " </td>" +
-                                    "<td><input type='checkbox' name='yes[" + record.id +
+                                    "<td><input class='form-check-input' type='checkbox' name='yes[" + record.id +
                                     "]'></td>" +
                                     "<td>" +
-                                    "<textarea name='notes[" + record.id +
+                                    "<textarea class='form-control' name='notes[" + record.id +
                                     "]' id='' cols='30' rows='3' class='form-control'>" +
                                     notes +
                                     "</textarea>" +
@@ -232,8 +232,6 @@
                                     "</tr>"
                                 );
                             }
-
-                            console.log(record);
 
                             $('#medhistory_table tbody').append(tr[0]);
                         });

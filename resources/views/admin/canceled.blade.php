@@ -4,7 +4,7 @@
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-6">
+                    <div class="col-lg-6">
                         <h1 class="m-0">Canceled Appointments</h1>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
@@ -19,45 +19,47 @@
         </div>
 
         @role('User')
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="card p-3 shadow" style="overflow-x:auto;">
-                        <table id='userPendingTable' class='display responsive table w-100' cellspacing="0">
-                            <thead>
-                                <th width="30%">Appointment ID</th>
-                                <th width="50%">Date</th>
-                                <th width="20%">Status</th>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="card p-3 shadow" style="overflow-x:auto;">
+                            <table id='userPendingTable' class='display responsive table w-100' cellspacing="0">
+                                <thead>
+                                    <th width="30%">Appointment ID</th>
+                                    <th width="25%">Date</th>
+                                    <th width="25%">Reason</th>
+                                    <th width="20%">Status</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endrole
 
         @role('Admin')
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="card p-3 shadow" style="overflow-x:auto;">
-                        <table id='adminPendingTable' class='display responsive table w-100' cellspacing="0">
-                            <thead>
-                                <th width="20%">Appointment ID</th>
-                                <th width="25%">Date</th>
-                                <th width="25%">Name</th>
-                                <th width="30%">Status</th>
-                                {{-- <th width="10%">Action</th> --}}
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="card p-3 shadow" style="overflow-x:auto;">
+                            <table id='adminPendingTable' class='display responsive table w-100' cellspacing="0">
+                                <thead>
+                                    <th width="10%">Appointment ID</th>
+                                    <th width="20%">Name</th>
+                                    <th width="25%">Date</th>
+                                    <th width="25%">Reason</th>
+                                    <th width="20%">Status</th>
+                                    {{-- <th width="10%">Action</th> --}}
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endrole
     </main>
 
@@ -223,7 +225,7 @@
                                 month: 'long',
                                 day: 'numeric'
                             };
-                            let date = new Date(record.created_at);
+                            let date = new Date(record.date);
                             date = date.toLocaleDateString("en-US", options);
 
                             let id = pad(record.id);
@@ -232,6 +234,7 @@
                                 "<tr>" +
                                 "<td>" + id + "</td>" +
                                 "<td>" + date + "</td>" +
+                                "<td>" + record.reason + "</td>" +
                                 "<td>" + status + "</td>" +
                                 "</tr>"
                             );
@@ -287,7 +290,7 @@
                                 month: 'long',
                                 day: 'numeric'
                             };
-                            let date = new Date(record.created_at);
+                            let date = new Date(record.date);
                             date = date.toLocaleDateString("en-US", options);
 
                             let id = pad(record.id);
@@ -295,8 +298,9 @@
                             const tr = $(
                                 "<tr>" +
                                 "<td>" + id + "</td>" +
-                                "<td>" + date + "</td>" +
                                 "<td>" + record.user.name + "</td>" +
+                                "<td>" + date + "</td>" +
+                                "<td>" + record.reason + "</td>" +
                                 "<td>" + status + "</td>" +
                                 "</tr>"
                             );

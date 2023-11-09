@@ -4,7 +4,7 @@
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-6">
+                    <div class="col-lg-6">
                         <h1 class="m-0">Scheduled Appointments</h1>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
@@ -19,45 +19,45 @@
         </div>
 
         @role('User')
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="card p-3 shadow" style="overflow-x:auto;">
-                        <table id='userPendingTable' class='display responsive table w-100' cellspacing="0">
-                            <thead>
-                                <th width="30%">Appointment ID</th>
-                                <th width="50%">Date</th>
-                                <th width="20%">Status</th>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="card p-3 shadow" style="overflow-x:auto;">
+                            <table id='userPendingTable' class='display responsive table w-100' cellspacing="0">
+                                <thead>
+                                    <th width="30%">Appointment ID</th>
+                                    <th width="50%">Date</th>
+                                    <th width="20%">Status</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endrole
 
         @role('Admin')
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="card p-3 shadow" style="overflow-x:auto;">
-                        <table id='adminPendingTable' class='display responsive table w-100' cellspacing="0">
-                            <thead>
-                                <th width="20%">Appointment ID</th>
-                                <th width="25%">Date</th>
-                                <th width="25%">Name</th>
-                                <th width="20%">Status</th>
-                                <th width="10%">Action</th>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="card p-3 shadow" style="overflow-x:auto;">
+                            <table id='adminPendingTable' class='display responsive table w-100' cellspacing="0">
+                                <thead>
+                                    <th width="20%">Appointment ID</th>
+                                    <th width="25%">Date</th>
+                                    <th width="25%">Name</th>
+                                    <th width="20%">Status</th>
+                                    <th width="10%">Action</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endrole
 
     </main>
@@ -78,6 +78,19 @@
                                 <div class="col">
                                     @csrf
                                     <input type="hidden" id="approve_id_input" name="id">
+                                    <div class="row mb-2 form-group">
+                                        <div class="col">
+                                            <label class="form-label">Availed Service</label>
+                                            <select class="form-select" name="services" id="services"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 form-group">
+                                        <div class="col">
+                                            <label class="form-label">Prescriptions</label>
+                                            <textarea class="form-control" id="prescription" name="prescription" cols="30" rows="3"></textarea>
+                                            <span class="text-danger" id="prescription_error"></span>
+                                        </div>
+                                    </div>
                                     You're about to complete the appointment <strong><span id="app_id"></span></strong>.
                                 </div>
                             </div>
@@ -108,6 +121,14 @@
                                 <div class="col">
                                     @csrf
                                     <input type="hidden" id="cancel_id_input" name="id">
+                                    <div class="row mb-2 form-group">
+                                        <div class="col">
+                                            <label class="form-label">Reason</label>
+                                            <textarea class="form-control" id="reason" name="reason" cols="30" rows="3"></textarea>
+                                            <span class="text-danger" id="reason_error"></span>
+                                        </div>
+
+                                    </div>
                                     You're about to cancel the appointment <strong><span
                                             id="cancel_app_id"></span></strong>.
                                 </div>
@@ -117,7 +138,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-danger" id="btnCancel">Cancel</button>
+                    <button class="btn btn-danger" id="btnCancel">Cancel Appointment</button>
                 </div>
             </div>
         </div>
@@ -188,7 +209,7 @@
                                 month: 'long',
                                 day: 'numeric'
                             };
-                            let date = new Date(record.created_at);
+                            let date = new Date(record.date);
                             date = date.toLocaleDateString("en-US", options);
 
                             let id = pad(record.id);
@@ -252,7 +273,7 @@
                                 month: 'long',
                                 day: 'numeric'
                             };
-                            let date = new Date(record.created_at);
+                            let date = new Date(record.date);
                             date = date.toLocaleDateString("en-US", options);
 
                             let id = pad(record.id);
@@ -304,6 +325,12 @@
                         $("#approveForm").attr('action', url);
                         $('#approve_id_input').val(data.data[0].id);
                         $('#app_id').html(id);
+
+                        data.services.forEach(element => {
+                            $('#services').append(
+                                    "<option value='" + element
+                                    .id + "'>" + element.service_name + "</option>")
+                        });
 
                         $('#approveModal').modal('show');
                     },
@@ -427,7 +454,7 @@
                     success: function(res) {
                         console.log(res);
                         $('#btnCancel').prop('disabled', false);
-                        $('#btnCancel').html("Cancel");
+                        $('#btnCancel').html("Cancel Appointment");
 
                         // if (res.status === 400) {
                         //     if (res.error.reason != null) {
@@ -456,7 +483,7 @@
                     }
                 }).done(function(data) {
                     $('#btnCancel').prop('disabled', false);
-                    $('#btnCancel').html("Cancel");
+                    $('#btnCancel').html("Cancel Appointment");
                 });
             });
 
