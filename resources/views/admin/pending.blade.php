@@ -362,6 +362,7 @@
             adminTableReload();
 
             $(document).on('click', '#toggleAdd', function() {
+
                 $('#addModal').modal('show');
             });
 
@@ -407,6 +408,7 @@
                             $('#addModal').modal('hide');
                             userTableReload();
                             adminTableReload();
+                            
                         }
 
                         if (res.status === 405) {
@@ -451,7 +453,6 @@
                     type: 'GET',
                     url: url,
                     success: function(data) {
-                        console.log(data);
 
                         let id = pad(data.data[0].id);
                         let name = data.data[0].user.name;
@@ -510,6 +511,8 @@
 
                                 $('#medhistory_table tbody').append(tr[0]);
                             });
+
+                            
                         }
 
                         $('#approveModal').modal('show');
@@ -582,7 +585,7 @@
 
                 var url = "{{ route('appointment.select', ':id') }}";
                 url = url.replace(':id', id);
-
+                $('#reason').val('');
 
                 $.ajax({
                     type: 'GET',
@@ -669,6 +672,8 @@
 
 
         });
+
+        
     </script>
 @endsection
 

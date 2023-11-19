@@ -217,4 +217,36 @@ class AppointmentController extends Controller
             abort(500, 'Something Went Wrong');
         }
     }
+
+    public function getappointmentcounts(Request $request)
+    {
+        try {
+
+            $pending = 0;
+            $approve = 0;
+            $canceled = 0;
+            $completed = 0;
+
+            if (Auth::user()->getRoleNames()[0] == "Admin") {
+                $pending = Appointment::where('status', '0')->count();
+                $approve = Appointment::where('status', '1')->count();
+                $canceled = Appointment::where('status', '2')->count();
+                $completed = Appointment::where('status', '3')->count();
+            }else{
+                $pending = Appointment::where('status', '0')->where('user_id', Auth::user()->id)->count();
+                $approve = Appointment::where('status', '1')->where('user_id', Auth::user()->id)->count();
+                $canceled = Appointment::where('status', '2')->where('user_id', Auth::user()->id)->count();
+                $completed = Appointment::where('status', '3')->where('user_id', Auth::user()->id)->count();
+            }
+
+            $data['pending'] = $pending;
+            $data['approve'] = $approve;
+            $data['canceled'] = $canceled;
+            $data['completed'] = $completed;
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            abort(500, 'Something Went Wrong');
+        }
+    }
 }

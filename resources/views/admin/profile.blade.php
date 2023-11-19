@@ -7,7 +7,7 @@
                     <div class="col-lg-6">
                         <h1 class="m-0">Profile</h1>
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
                             <li class="breadcrumb-item active">Profile</li>
                         </ol>
                     </div>
@@ -58,8 +58,29 @@
                                                 <span class="text-danger" id="phonenum_error"></span>
                                             </div>
                                         </div>
+                                        <div class="row mb-2 form-group">
+                                            <div class="col">
+                                                <label class="form-label" for="phonenum_input">Sex</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="sex"
+                                                        id="sex_male_input" value="male">
+                                                    <label class="form-check-label" for="sex_male_input">
+                                                        Male
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="sex"
+                                                        id="sex_female_input" value="female">
+                                                    <label class="form-check-label" for="sex_female_input">
+                                                        Female
+                                                    </label>
+                                                </div>
+                                                <span class="text-danger" id="sex_error"></span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <hr>
                                 <div class="row my-2">
                                     <div class="col text-end">
                                         <button id="btnUpdate" class="btn btn-primary">Save</button>
@@ -177,6 +198,13 @@
                         $('#email_input').val(data.data.email);
                         $('#bdate_input').val(data.data.bdate);
                         $('#phonenum_input').val(data.data.phonenum);
+                        if (data.data.sex == 0) {
+                            $('#sex_male_input').prop('checked', true);
+                            $('#sex_female_input').prop('checked', false);
+                        } else {    
+                            $('#sex_female_input').prop('checked', true);
+                            $('#sex_male_input').prop('checked', false);
+                        }
                     }
                 },
             });
@@ -221,7 +249,8 @@
                                 tr = $(
                                     "<tr>" +
                                     "<td> " + record.question + " </td>" +
-                                    "<td><input class='form-check-input' type='checkbox' name='yes[" + record.id +
+                                    "<td><input class='form-check-input' type='checkbox' name='yes[" +
+                                    record.id +
                                     "]'></td>" +
                                     "<td>" +
                                     "<textarea class='form-control' name='notes[" + record.id +
@@ -319,6 +348,8 @@
                 $('#email_error').html("");
                 $('#bdate_error').html("");
                 $('#phonenum_error').html("");
+                $('#sex_error').html("");
+
 
                 let detailsForm = $("#detailsForm")[0];
                 let detailsFormData = new FormData(detailsForm);
@@ -348,6 +379,9 @@
                             }
                             if (res.error.bdate != null) {
                                 $('#bdate_error').html(res.error.bdate);
+                            }
+                            if (res.error.sex != null) {
+                                $('#sex_error').html(res.error.sex);
                             }
                         }
 

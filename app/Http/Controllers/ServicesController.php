@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -184,4 +185,27 @@ class ServicesController extends Controller
             return response()->json(['msg' => 'Bad request. ID is not found.'], 400);
         }
     }
+
+    public function getservicesdata()
+    {
+
+        $services = Services::all();
+        $labels = [];
+        $data = [];
+        
+
+        foreach ($services as $key => $service) {
+            $name = $service->service_name;
+            $count = Appointment::where('service_id', $service->id)->where('status', '3')->count();
+            array_push($labels, $name);
+            array_push($data, $count);
+        }
+
+        $response['labels'] = $labels;
+        $response['data'] = $data;
+
+
+        return response()->json($response);
+    }
+
 }

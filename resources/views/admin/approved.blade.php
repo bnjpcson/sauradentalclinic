@@ -317,6 +317,11 @@
                 var url = "{{ route('appointment.select', ':id') }}";
                 url = url.replace(':id', id);
 
+                $('#services').empty();
+                $('#prescription').val('');
+
+
+
                 $.ajax({
                     type: 'GET',
                     url: url,
@@ -403,6 +408,7 @@
                 var url = "{{ route('appointment.select', ':id') }}";
                 url = url.replace(':id', id);
 
+                $('#reason').val('');
 
                 $.ajax({
                     type: 'GET',

@@ -119,29 +119,42 @@
                                 <li class="nav-item">
                                     <a href="{{ route('appointment.pending') }}"
                                         @if ($page_open == 'pending') class="nav-link active" @else class="nav-link" @endif>
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Pending Approval</p>
+
+                                        <div id="pending_tab">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Pending Approval</p>
+
+                                        </div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('appointment.approved') }}"
                                         @if ($page_open == 'approved') class="nav-link active" @else class="nav-link" @endif>
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Scheduled</p>
+
+                                        <div id="approve_tab">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Scheduled</p>
+                                        </div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('appointment.canceled') }}"
                                         @if ($page_open == 'canceled') class="nav-link active" @else class="nav-link" @endif>
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Canceled</p>
+
+                                        <div id="canceled_tab">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Canceled</p>
+                                        </div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('appointment.completed') }}"
                                         @if ($page_open == 'completed') class="nav-link active" @else class="nav-link" @endif>
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Completed</p>
+
+                                        <div id="completed_tab">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Completed</p>
+                                        </div>
                                     </a>
                                 </li>
 
@@ -149,27 +162,27 @@
                         </li>
 
                         @role('Admin')
-                        <li class="nav-item">
-                            <a href="{{ route('admin.services') }}"
-                                @if ($page_open == 'services') class="nav-link active" @else class="nav-link" @endif>
-                                <i class="nav-icon fas fa-tooth"></i>
-                                <p>
-                                    Services
-                                </p>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.services') }}"
+                                    @if ($page_open == 'services') class="nav-link active" @else class="nav-link" @endif>
+                                    <i class="nav-icon fas fa-tooth"></i>
+                                    <p>
+                                        Services
+                                    </p>
+                                </a>
+                            </li>
                         @endrole
 
                         @role('Admin')
-                        <li class="nav-item">
-                            <a href="{{ route('admin.users') }}"
-                                @if ($page_open == 'users') class="nav-link active" @else class="nav-link" @endif>
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>
-                                    Users
-                                </p>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.users') }}"
+                                    @if ($page_open == 'users') class="nav-link active" @else class="nav-link" @endif>
+                                    <i class="nav-icon fas fa-users"></i>
+                                    <p>
+                                        Users
+                                    </p>
+                                </a>
+                            </li>
                         @endrole
                         <li class="nav-item">
                             <a href="{{ route('admin.profile') }}"
@@ -206,6 +219,8 @@
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
+
+    @yield('footer-script')
 
     <!-- jQuery -->
     {{-- <script src="plugins/jquery/jquery.min.js"></script> --}}
@@ -267,6 +282,77 @@
             url: url,
             success: function(response) {
                 window.location.href = "/";
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        $('#toggleLogout').on('click', function(event) {
+            event.preventDefault();
+
+            var url = "{{ route('logout') }}";
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function(response) {
+                    window.location.href = "/";
+                }
+            });
+        });
+
+        var url = "{{ route('appointment.getappointmentcounts') }}";
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(response) {
+                console.log(response);
+
+                if (response.pending > 0) {
+                    let count = response.pending;
+
+                    if (count > 9) {
+                        count = "9+";
+                    }
+
+                    $('#pending_tab').append('<span class="ms-2 rounded-pill bg-secondary px-2">' +
+                        count + '</span>');
+                }
+
+                if (response.approve > 0) {
+                    let count = response.approve;
+
+                    if (count > 9) {
+                        count = "9+";
+                    }
+
+                    $('#approve_tab').append('<span class="ms-2 rounded-pill bg-secondary px-2">' +
+                        count + '</span>');
+                }
+
+                if (response.canceled > 0) {
+                    let count = response.canceled;
+
+                    if (count > 9) {
+                        count = "9+";
+                    }
+
+                    $('#canceled_tab').append('<span class="ms-2 rounded-pill bg-secondary px-2">' +
+                        count + '</span>');
+                }
+
+                if (response.completed > 0) {
+                    let count = response.completed;
+
+                    if (count > 9) {
+                        count = "9+";
+                    }
+
+                    $('#completed_tab').append(
+                        '<span class="ms-2 rounded-pill bg-secondary px-2">' +
+                        count + '</span>');
+                }
+
             }
         });
     });

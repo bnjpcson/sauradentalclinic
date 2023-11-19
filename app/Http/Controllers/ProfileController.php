@@ -66,6 +66,9 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
+        $sex = ($request->sex == "male") ? "0" : "1";
+        
+
         try {
             $validate = Validator::make($request->all(), [
                 "id" => "required",
@@ -73,6 +76,7 @@ class ProfileController extends Controller
                 "email" => "required|unique:users,email," . $request->id . "|bail",
                 "bdate" => "required|date|bail",
                 "phonenum" => "required|numeric|digits:11|bail",
+                "sex" => "required"
             ], [
                 'id.required' => 'ID is required',
                 'name.required' => 'Name is required',
@@ -83,11 +87,13 @@ class ProfileController extends Controller
                 'phonenum.required' => 'Phone number is required',
                 'phonenum.numeric' => 'Please input a valid phone number',
                 'phonenum.digits' => 'Please input a valid phone number',
+                'sex.required' => 'Please select a sex',
             ]);
 
             if ($validate->fails()) {
                 return response()->json(['status' => 400, 'error' => $validate->getMessageBag(), 'data' => $request->all()]);
             } else {
+                
                 try {
                     $id = $request->id;
 
@@ -97,6 +103,7 @@ class ProfileController extends Controller
                     $user->email = $request->email;
                     $user->phonenum = $request->phonenum;
                     $user->bdate = $request->bdate;
+                    $user->sex = $sex;
                     $user->save();
 
                     if ($user) {

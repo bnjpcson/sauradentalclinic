@@ -31,7 +31,7 @@ Route::get('/', function () {
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-    Route::prefix('services')->group(function () {
+    Route::prefix('services')->middleware('role:Admin')->group(function () {
         Route::get('/', [ServicesController::class, 'index'])->name('admin.services');
         Route::get('/getallservices', [ServicesController::class, 'getallservices'])->name('services.getallservices');
         Route::post('/store', [ServicesController::class, 'store'])->name('services.store');
@@ -41,7 +41,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/delete/{id}', [ServicesController::class, 'delete'])->name('services.delete');
     });
 
-    Route::prefix('users')->group(function () {
+    Route::prefix('users')->middleware('role:Admin')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('admin.users');
         Route::get('/getallusers', [UserController::class, 'getallusers'])->name('users.getallusers');
         Route::post('/store', [UserController::class, 'store'])->name('users.store');
@@ -79,5 +79,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('/cancel/{id}', [AppointmentController::class, 'cancel'])->name('appointment.cancel');
         Route::post('/complete/{id}', [AppointmentController::class, 'complete'])->name('appointment.complete');
     });
+
+    Route::get('/getservicesdata', [ServicesController::class, 'getservicesdata'])->name('services.getservicesdata');
+
+    Route::get('/getappointmentcounts', [AppointmentController::class, 'getappointmentcounts'])->name('appointment.getappointmentcounts');
 
 });
